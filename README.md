@@ -1,157 +1,103 @@
-# 🛡️ Mini Project – Classification Metrics (Fraud Detection)
+Mini Project – Classification Metrics (Fraud Detection)
+📌 1. Overview
 
-This mini project teaches how to evaluate a **binary classification model** using real fraud detection data.  
-Students manually compute and interpret important ML metrics.
+This mini project demonstrates how to evaluate a binary classification model using key metrics:
 
----
+Accuracy
 
-## 📌 1. Goal
+Precision
 
-The goals of this mini project are:
+Recall
 
-- Understand how classification metrics work in real-world fraud detection.
-- Compute:
-  - Accuracy  
-  - Precision  
-  - Recall  
-  - F1-score  
-  - Confusion Matrix
-- Interpret these metrics in a banking fraud detection scenario.
-- Optionally verify results using Python & sklearn.
+F1-Score
 
----
+Confusion Matrix
 
-## 📌 2. Problem Description
+We use a simple fraud detection dataset where:
 
-We have a binary classification problem:
+1 = Fraud
 
-- **1 = Fraud**
-- **0 = Normal Transaction**
+0 = Normal Transaction
 
-Dataset used:
+📌 2. Dataset
+y_true = [1, 0, 1, 1, 0, 1, 0, 0, 1, 0]   # Actual labels
+y_pred = [1, 0, 0, 1, 0, 1, 1, 0, 1, 0]   # Model predictions
 
-- **Actual Labels (`y_true`)**  
-  `[1, 0, 1, 1, 0, 1, 0, 0, 1, 0]`
+📌 3. Confusion Matrix
+Actual \ Predicted	0	1
+0 (Normal)	TN	FP
+1 (Fraud)	FN	TP
 
-- **Predicted Labels (`y_pred`)**  
-  `[1, 0, 0, 1, 0, 1, 1, 0, 1, 0]`
+Definitions:
 
-Each index represents one transaction.
+TP – Model predicted fraud & it was fraud
 
----
+TN – Model predicted normal & it was normal
 
-## 📌 3. Steps I Followed
+FP – Model predicted fraud but it was normal (False Alarm)
 
-### ✔ Step 1 — Wrote Down the Data  
-Noted `y_true` and `y_pred` along with class meanings.
+FN – Model predicted normal but it was fraud (Missed Fraud)
 
-### ✔ Step 2 — Created Transaction Table  
-Made a table:
+📌 4. Metric Formulas 
 
-| Index | y_true | y_pred | Type |
-|-------|--------|---------|------|
-| 0 | 1 | 1 | TP |
-| 1 | 0 | 0 | TN |
-| 2 | 1 | 0 | FN |
-| ... | ... | ... | ... |
+These formulas use plain text so they work on GitHub:
 
-Used rules:
-- **TP** = actual 1, predicted 1  
-- **TN** = actual 0, predicted 0  
-- **FP** = actual 0, predicted 1  
-- **FN** = actual 1, predicted 0  
+Accuracy = (TP + TN) / (TP + TN + FP + FN)
 
-### ✔ Step 3 — Built Confusion Matrix
+Precision = TP / (TP + FP)
 
-markdown
-Copy code
-             Predicted
-          |   0   |   1   |
-Actual 0 | TN | FP |
-Actual 1 | FN | TP |
+Recall = TP / (TP + FN)
 
-yaml
-Copy code
+F1 Score = 2 * (Precision * Recall) / (Precision + Recall)
 
-Also written as:  
-`[[TN, FP], [FN, TP]]`
+📌 5. Python Code (metrics_check.py)
+from sklearn.metrics import (
+    confusion_matrix,
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score
+)
 
-### ✔ Step 4 — Calculated All Metrics
+# Dataset
+y_true = [1, 0, 1, 1, 0, 1, 0, 0, 1, 0]
+y_pred = [1, 0, 0, 1, 0, 1, 1, 0, 1, 0]
 
-Using formulas:
+# Compute Metrics
+conf_matrix = confusion_matrix(y_true, y_pred)
+accuracy = accuracy_score(y_true, y_pred)
+precision = precision_score(y_true, y_pred)
+recall = recall_score(y_true, y_pred)
+f1 = f1_score(y_true, y_pred)
 
-- **Accuracy** = (TP + TN) / (TP + TN + FP + FN)
-- **Precision** = TP / (TP + FP)
-- **Recall** = TP / (TP + FN)
-- **F1-score** = 2 * (Precision * Recall) / (Precision + Recall)
+# Print Results
+print("Confusion Matrix:\n", conf_matrix)
+print(f"Accuracy  : {accuracy:.4f}")
+print(f"Precision : {precision:.4f}")
+print(f"Recall    : {recall:.4f}")
+print(f"F1 Score  : {f1:.4f}")
 
-All values were calculated up to 2 decimal places.
+📌 6. Interpretation (Fraud Detection Context)
 
----
+Accuracy → overall correctness
 
-## 📌 4. Interpretation (Fraud Detection Context)
+Precision → when model says “fraud”, how often it is correct
 
-- **Accuracy** tells overall correctness of the model.
-- **Precision (fraud)** answers:  
-  “Of all flagged frauds, how many were actually fraud?”
+Recall → how many real frauds the model detects
 
-- **Recall (fraud)** answers:  
-  “Of all real frauds, how many did we successfully detect?”
+F1 score → balanced measure of precision and recall
 
-- **F1-score** balances precision and recall.
+⚠ In Banking:
 
-### 🏦 Fraud Detection Reality
+High FN (missed fraud) = big financial loss
 
-- **False Negatives (FN)** = *missed fraud → most dangerous*  
-  Banks lose money directly.
+High FP (false fraud alerts) = angry customers
 
-- **False Positives (FP)** = normal transactions marked as fraud  
-  → annoys customers, but safer than FN.
+Fraud models should prioritize Recall.
 
-### Final Conclusion  
-(Students write their own answer)  
-Example:  
-> Because fraud detection is a high-risk domain, recall should be high.  
-> This model needs improvement before being considered acceptable.
+📌 7. How to Run
+Install dependencies
+pip install scikit-learn
 
----
-
-## 📌 5. Optional Python Verification (`metrics_check.py`)
-
-If using Python, create:
-
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
-
-y_true = [1,0,1,1,0,1,0,0,1,0]
-y_pred = [1,0,0,1,0,1,1,0,1,0]
-
-print("Accuracy:", accuracy_score(y_true, y_pred))
-print("Precision:", precision_score(y_true, y_pred))
-print("Recall:", recall_score(y_true, y_pred))
-print("F1-Score:", f1_score(y_true, y_pred))
-print("Confusion Matrix:\n", confusion_matrix(y_true, y_pred))
-
-yaml
-Copy code
-
-Students use this to compare with manual calculations.
-
----
-
-## 📌 6. Uploading to GitHub (Short Guide)
-
-1. Create a folder:  
-   `classification-metrics-fraud-mini-project`
-
-2. Add files:
-   - `README.md`
-   - `metrics_check.py` (optional)
-
-3. Go to GitHub → New Repository  
-4. Upload the folder contents  
-5. Commit and publish 🚀
-
----
-
-## ✔ Project Completed Successfully  
-This mini project teaches students to think like ML engineers — not just run code
+Run the script
+python metrics_check.py
